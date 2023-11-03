@@ -3,6 +3,5 @@
  * @param {*}
  * @return {*}
  */
-
-export default [
-]
+declare const _default: never[];
+export default _default;
