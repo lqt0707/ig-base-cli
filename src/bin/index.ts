@@ -2,16 +2,13 @@
 
 import * as path from "path";
 import alias from "module-alias";
+import { Command } from "commander";
+import internallyCommand from "./internally";
+import { initExtraPack } from "./extra";
+
 const packageConfig = require("../../package.json");
 
 alias(path.resolve(__dirname, "../../"));
-
-import { Command } from "commander";
-
-import internallyCommand from "./internally";
-
-import { initExtraPack } from "./extra";
-
 const program = new Command(packageConfig.commandName);
 
 export interface ICommand {

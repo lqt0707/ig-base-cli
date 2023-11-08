@@ -1,10 +1,12 @@
-import { IBranch, getGithubBranch } from "@/registry/github";
-import { ITpl, getTplList, loadTpl, updateTpl } from "@/tpl";
-import { loggerError } from "@/util";
 import inquirer from "inquirer";
 import { Subject } from "rxjs";
 
-const tplList = getTplList() as ITpl[];
+import { updateTpl, getTplList, loadTpl } from "@/tpl";
+
+import type { ITpl } from "@/tpl";
+import { getGithubBranch } from "@/registry/github";
+import type { IBranch } from "@/registry/github";
+import { loggerError } from "@/util";
 
 /**
  * @description: 添加模板
@@ -47,13 +49,17 @@ export const addTpl = () => {
  */
 export const selectTpl = async () => {
   const prompts: any = new Subject();
-  let select: ITpl, githubName: string, path: string, loadUrl: string;
+  let select: ITpl;
+  let githubName: string;
+  let path: string;
+  let loadUrl: string;
+
   try {
     const onEachAnswer = async (result: any) => {
       const { name, answer } = result;
       if (name === "name") {
         githubName = answer;
-        select = tplList.filter((tpl: ITpl) => tpl.name === answer[0])[0];
+        select = tplList.filter((tpl: ITpl) => tpl.name === answer)[0];
         const { downloadUrl, org } = select;
         const branches = (await getGithubBranch(select)) as IBranch[];
         loadUrl = `${downloadUrl}/${org}/zip/refs/heads`;
@@ -100,6 +106,8 @@ export const selectTpl = async () => {
     inquirer
       .prompt(prompts)
       .ui.process.subscribe(onEachAnswer, onError, onCompleted);
+
+    const tplList = getTplList() as ITpl[];
 
     prompts.next({
       type: "list",
